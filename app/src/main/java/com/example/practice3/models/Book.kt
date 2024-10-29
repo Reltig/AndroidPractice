@@ -1,7 +1,7 @@
 package com.example.practice3.models
 
 data class Book(
-    val id: Int,
+    val id: String,
     val title: String,
     val authors: String,
     val publisher: String,

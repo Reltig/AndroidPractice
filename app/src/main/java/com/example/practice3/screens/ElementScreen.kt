@@ -7,11 +7,13 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.practice3.viewModels.BookViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ElementScreen(controller: NavHostController, elementId: Int) {
-    val viewModel = viewModel<BookViewModel>()
-    val book = viewModel.getById(elementId);
+fun ElementScreen(controller: NavHostController, elementId: String) {
+    val viewModel = koinViewModel<BookViewModel>()
+
+    val book = viewModel.viewState.items.find { it.id == elementId }
 
     if(book == null){
         Text("Book not found")
