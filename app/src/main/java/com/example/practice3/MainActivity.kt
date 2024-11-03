@@ -57,7 +57,7 @@ fun MainScreen() {
                 ListScreen(controller)
             }
             composable("element/{elementId}") { backStackEntry ->
-                val elementId = backStackEntry.arguments?.getString("elementId")?.toInt() ?: 0
+                val elementId = backStackEntry.arguments?.getString("elementId") ?: ""
                 currentRoute = "element"
                 ElementScreen(controller, elementId)
             }
