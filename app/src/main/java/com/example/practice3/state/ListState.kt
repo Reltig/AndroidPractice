@@ -7,6 +7,7 @@ import com.example.practice3.models.Book
 interface ListState {
     val searchName: String
     val items: List<Book>
+    val favouriteBooks: List<Book>
     val error: String?
     var loading: Boolean
 }

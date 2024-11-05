@@ -17,7 +17,7 @@ import com.example.practice3.R
 import com.example.practice3.classes.NavigationElement
 
 val navigationItems = listOf(
-    NavigationElement("Home", "home", R.drawable.home),
+    NavigationElement("Settings", "settings", R.drawable.home),
     NavigationElement("List", "list", R.drawable.list),
     NavigationElement("Notification", "notification", R.drawable.bell)
 )
