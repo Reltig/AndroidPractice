@@ -9,9 +9,12 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ListItem
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.practice3.viewModels.BookViewModel
@@ -43,7 +46,19 @@ fun ListScreen(controller: NavHostController) {
                 ListItem(
                     modifier = Modifier.clickable { controller.navigate("element/${book.id}") },
                     headlineContent = {
-                        Text(text = "Film: ${book.title} Authors: ${book.authors}")
+                        Text(text = "Book: ${book.title} Authors: ${book.authors}")
+                    },
+                    leadingContent = {
+                        Button(
+                            colors = ButtonColors(
+                                contentColor = Color(0, 0, 0),
+                                containerColor = Color(255, 255, 0),
+                                disabledContentColor = Color(255, 255, 0),
+                                disabledContainerColor = Color(255, 255, 0)
+                            ),
+                            onClick = {viewModel.addFavouriteBook(book)}) {
+                            Text("Make favourite")
+                        }
                     }
                 )
             }
