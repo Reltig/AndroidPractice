@@ -1,4 +1,4 @@
-package com.example.practice3.data.api.response.Book
+package com.example.practice3.data.api.response.BooksListResponse
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
