@@ -15,10 +15,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.practice3.components.BottomNavigationBar
 import com.example.practice3.components.navigationItems
+import com.example.practice3.screens.EditProfile
 import com.example.practice3.screens.ElementScreen
 import com.example.practice3.screens.SettingsScreen
 import com.example.practice3.screens.ListScreen
 import com.example.practice3.screens.NotificationScreen
+import com.example.practice3.screens.ProfileScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +56,14 @@ fun MainScreen() {
                 val elementId = backStackEntry.arguments?.getString("elementId") ?: ""
                 currentRoute = "element"
                 ElementScreen(controller, elementId)
+            }
+            composable("profile") { backStackEntry ->
+                currentRoute = "profile"
+                ProfileScreen(controller)
+            }
+            composable("edit_profile") { backStackEntry ->
+                currentRoute = "edit_profile"
+                EditProfile(controller)
             }
         }
     }

@@ -7,6 +7,7 @@ import com.example.practice3.data.api.BooksApi
 import com.example.practice3.data.api.Interceptors.TokenInterceptor
 import com.example.practice3.data.mappers.BookResponseToEntityMapper
 import com.example.practice3.viewModels.BookViewModel
+import com.example.practice3.viewModels.ProfileViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -20,4 +21,5 @@ val appModule = module {
     single<IBooksRepository> { BooksRepository(get(), get(), get()) }
     factory { BookResponseToEntityMapper() }
     viewModel<BookViewModel> { BookViewModel(get(), androidContext()) }
+    viewModel<ProfileViewModel> { ProfileViewModel(androidContext()) }
 }

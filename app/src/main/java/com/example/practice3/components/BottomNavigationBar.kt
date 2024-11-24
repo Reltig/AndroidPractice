@@ -19,7 +19,8 @@ import com.example.practice3.classes.NavigationElement
 val navigationItems = listOf(
     NavigationElement("Settings", "settings", R.drawable.home),
     NavigationElement("List", "list", R.drawable.list),
-    NavigationElement("Notification", "notification", R.drawable.bell)
+    NavigationElement("Notification", "notification", R.drawable.bell),
+    NavigationElement("Profile", "profile", R.drawable.person)
 )
 
 @Composable
