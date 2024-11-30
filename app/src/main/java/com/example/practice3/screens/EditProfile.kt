@@ -1,7 +1,6 @@
 package com.example.practice3.screens
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -10,16 +9,26 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.res.painterResource
 import androidx.activity.result.launch
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.Icon
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +48,7 @@ import coil3.compose.AsyncImage
 import com.example.practice3.R
 import com.example.practice3.viewModels.ProfileViewModel
 import org.koin.androidx.compose.koinViewModel
+import org.threeten.bp.LocalTime
 import java.io.File
 import java.util.Date
 
@@ -55,10 +65,10 @@ fun EditProfile(controller: NavHostController) {
         }
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (!isGranted) {
-                val dialog = AlertDialog.Builder(context)
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { map: Map<String, Boolean> ->
+            if (map.values.contains(false)) {
+                val dialog = android.app.AlertDialog.Builder(context)
                     .setMessage("Error")
                     .setCancelable(false)
                     .setPositiveButton("OK") { _, _ ->
@@ -95,7 +105,35 @@ fun EditProfile(controller: NavHostController) {
             value = state.url,
             onValueChange = {viewModel.setProfileUrl(it)}
         )
-        Button(onClick = {controller.popBackStack()}) {
+        TextField(
+            value = state.timeString,
+            onValueChange = { viewModel.onTimeChanged(it) },
+            label = { Text("Время любимой пары") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            isError = state.timeError != null,
+            trailingIcon = {
+                Icon(
+                    painterResource(id = R.drawable.timer),
+                    null,
+                    modifier = Modifier.clickable { viewModel.onTimeInputClicked() }.size(10.dp))
+            }
+        )
+        state.timeError?.let {
+            Text(
+                it,
+                color = MaterialTheme.colorScheme.error,
+            )
+        }
+        if (state.showTimePicker) {
+            DialWithDialogExample(
+                onConfirm = { h, m -> viewModel.onTimeConfirmed(h, m) },
+                onDismiss = { viewModel.onTimeDialogDismiss() },
+                time = state.time
+            )
+        }
+        Button(onClick = {viewModel.onDoneClicked(); controller.popBackStack()}) {
             Text("Назад")
         }
     }
@@ -115,16 +153,27 @@ fun EditProfile(controller: NavHostController) {
 
     if (state.showPermission) {
         LaunchedEffect(Unit) {
+            val permissions = mutableListOf<String>()
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.Q &&
                 ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
+
+            if (
+                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            requestPermissionLauncher.launch(permissions.toTypedArray())
+
         }
     }
 
@@ -149,4 +198,48 @@ fun EditProfile(controller: NavHostController) {
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DialWithDialogExample(
+    onConfirm: (Int, Int) -> Unit,
+    onDismiss: () -> Unit,
+    time: LocalTime
+) {
+    val timePickerState = rememberTimePickerState(
+        initialHour = time.hour,
+        initialMinute = time.minute,
+        is24Hour = true,
+    )
+    TimePickerDialog(
+        onDismiss = { onDismiss() },
+        onConfirm = { onConfirm(timePickerState.hour, timePickerState.minute) }
+    ) {
+        TimePicker(
+            state = timePickerState,
+        )
+    }
+}
+
+@Composable
+fun TimePickerDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        dismissButton = {
+            TextButton(onClick = { onDismiss() }) {
+                Text("Отмена")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { onConfirm() }) {
+                Text("OK")
+            }
+        },
+        text = { content() }
+    )
 }

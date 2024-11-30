@@ -1,6 +1,7 @@
 package com.example.practice3
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Scaffold
@@ -10,9 +11,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.example.practice3.channelManager.NotificationChannelManager
 import com.example.practice3.components.BottomNavigationBar
 import com.example.practice3.components.navigationItems
 import com.example.practice3.screens.EditProfile
@@ -23,8 +26,16 @@ import com.example.practice3.screens.NotificationScreen
 import com.example.practice3.screens.ProfileScreen
 
 class MainActivity : ComponentActivity() {
+
+    private val channelManager: NotificationChannelManager by lazy {
+        NotificationChannelManager(NotificationManagerCompat.from(this), this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("BBB", "before create channel")
+        channelManager.createNotificationChannels()
+        Log.d("BBB", "after create channel")
         setContent {
             MainScreen()
         }

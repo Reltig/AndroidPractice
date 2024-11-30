@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.room.Room
 import com.example.practice3.data.db.AppDatabase
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.example.practice3.di.apiModule
 import com.example.practice3.di.appModule
 import org.koin.android.ext.koin.androidContext
@@ -18,6 +19,7 @@ class BookApp : Application(){
 
     override fun onCreate() {
         super.onCreate()
+        AndroidThreeTen.init(this)
 
         startKoin{
             androidLogger()
