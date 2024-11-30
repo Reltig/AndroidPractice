@@ -3,4 +3,6 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="notifications_channel_id">notifications_channel</string>
+    <string name="notifications_channel_name">Напоминание</string>
 </resources>

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.threeten.bp.LocalTime
 
 private val Context.dataStore by preferencesDataStore(name = "filter_preferences")
 
@@ -15,6 +16,7 @@ object DataPreferences {
     private val PROFILE_NAME = stringPreferencesKey("profile_name")
     private val URI_NAME = stringPreferencesKey("uri_name")
     private val URL_NAME = stringPreferencesKey("url_name")
+    private val TIME = stringPreferencesKey("time")
 
     fun getSearchName(context: Context): Flow<String> {
         return context.dataStore.data.map { preferences ->
@@ -61,6 +63,18 @@ object DataPreferences {
     suspend fun saveProfileUrl(context: Context, nameFilter: String) {
         context.dataStore.edit { preferences ->
             preferences[URL_NAME] = nameFilter
+        }
+    }
+
+    fun getTime(context: Context): Flow<String> {
+        return context.dataStore.data.map { preferences ->
+            preferences[TIME] ?: ""
+        }
+    }
+
+    suspend fun saveTime(context: Context, time: LocalTime) {
+        context.dataStore.edit { preferences ->
+            preferences[TIME] = time.toString()
         }
     }
 }
